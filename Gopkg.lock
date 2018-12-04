@@ -387,7 +387,7 @@
   version = "v2.2.2"
 
 [[projects]]
-  digest = "1:a4bfb772bfa2c33948f3ed3cf841e62a3dbaab5103e568caef5f6ab8795c8472"
+  digest = "1:7bee8d80bbbb58faf6cd33981738c936ea18a35fb437e578e8c05e2885ec0d84"
   name = "hidevops.io/hiboot"
   packages = [
     "pkg/app",
@@ -411,8 +411,8 @@
     "pkg/utils/str",
   ]
   pruneopts = "UT"
-  revision = "4222ad7c4524bbf047be68db6daf33b4b3d91ef0"
-  version = "v0.11.1"
+  revision = "26d4f2c51616d6439a780460fabaf934ca2711c4"
+  version = "v0.11.2"
 
 [[projects]]
   digest = "1:7a2b59ae200fa4db0b8753c2585f103fd9f3b2f34107913d5ffc35fdddd51779"
