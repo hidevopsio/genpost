@@ -1,12 +1,10 @@
 package cmd
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"github.com/manifoldco/promptui"
-	"github.com/spf13/afero"
-	"gopkg.in/yaml.v2"
+	"hidevops.io/hiboot/pkg/system"
 	"hidevops.io/hiboot/pkg/app/cli"
 	"hidevops.io/hiboot/pkg/log"
 	"hidevops.io/hiboot/pkg/utils/io"
@@ -105,29 +103,17 @@ func (c *GenPostCommand) genPost(root string) error {
 
 	var files []string
 	filepath.Walk(root, io.Visit(&files))
-	fs := afero.NewOsFs()
-	var prop map[string]interface{}
 	for _, file := range files {
 		if strings.Contains(file, "_index.md") {
 			log.Debugf("file : %v", file)
-			f, err := afero.ReadFile(fs, file)
+			prop, err := system.ReadYamlFromFile(file)
 			if err == nil {
-				buf := new(bytes.Buffer)
-				r := bytes.NewReader(f)
-				buf.ReadFrom(r)
-				str := string(buf.Bytes())
-				s := strings.Split(str, "---")
-
-				if err := yaml.Unmarshal([]byte(s[1]), &prop); err != nil {
-					return fmt.Errorf("文件格式错误")
-				}
 				title, ok := prop["title"]
 				if ok {
 					items = append(items, title.(string))
 					paths = append(paths, io.BaseDir(file))
 				}
 			}
-
 		}
 	}
 

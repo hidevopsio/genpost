@@ -427,11 +427,10 @@
   analyzer-version = 1
   input-imports = [
     "github.com/manifoldco/promptui",
-    "github.com/spf13/afero",
-    "gopkg.in/yaml.v2",
     "hidevops.io/hiboot/pkg/app/cli",
     "hidevops.io/hiboot/pkg/log",
     "hidevops.io/hiboot/pkg/starter/logging",
+    "hidevops.io/hiboot/pkg/system",
     "hidevops.io/hiboot/pkg/utils/io",
   ]
   solver-name = "gps-cdcl"
