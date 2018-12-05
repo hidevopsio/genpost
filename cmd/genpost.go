@@ -16,6 +16,8 @@ import (
 	"time"
 )
 
+const version = "genpost v1.0.0"
+
 var categoryTemplate = `---
 title: ${title}
 date: ${date}
@@ -44,6 +46,7 @@ author: ${author}
 type GenPostCommand struct {
 	cli.RootCommand
 
+	version bool
 	category bool
 }
 
@@ -74,7 +77,8 @@ Use the arrow keys to navigate: ↓ ↑ → ←
 `
 
 	flags := c.PersistentFlags()
-	flags.BoolVarP(&c.category, "category", "c", false, "--category=true or -c")
+	flags.BoolVarP(&c.category, "category", "c", false, "--category or -c")
+	flags.BoolVarP(&c.version, "version", "v", false, "--version or -v")
 
 	return c
 }
@@ -86,6 +90,11 @@ func (c *GenPostCommand) Run(args []string) (err error) {
 	root := filepath.Join(io.GetWorkDir(), "/content/")
 
 	log.Debug(root)
+
+	if c.version {
+		fmt.Println(version)
+		return nil
+	}
 
 	if c.category {
 		err = c.genCategory(root)
