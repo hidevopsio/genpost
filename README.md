@@ -5,7 +5,9 @@ genpost 是markdown文件生成器
 ## 安装方法
 
 ```bash
-go get -u -t github.com/hidevopsio/genpost
+git clone https://github.com/hidevopsio/genpost
+cd genpost
+go install
 ```
 
 ## 生成文章类别
@@ -18,7 +20,7 @@ genpost -c
 
 ✔ 目录: articles
 ✔ 标题: 分享文章
-✔ 排序 : 1
+✔ 排序: 1
 ```
 
 ## 生成文章
@@ -41,8 +43,8 @@ Use the arrow keys to navigate: ↓ ↑ → ←
   ▸ 分享文章
     代码阅读
 
-✔ 标题 : 我的文章标题█
-✔ 作者 : 邓冰寒
+✔ 标题: 我的文章标题█
+✔ 作者: 邓冰寒
 
 ```
 
@@ -68,7 +70,7 @@ Examples:
 
 ✔ 目录: articles
 ✔ 标题: 分享文章
-✔ 排序 : 1
+✔ 排序: 1
 
 2. 生成文章
 Use the arrow keys to navigate: ↓ ↑ → ←
@@ -78,8 +80,8 @@ Use the arrow keys to navigate: ↓ ↑ → ←
   ▸ 分享文章
     代码阅读
 
-✔ 标题 : 我的文章标题█
-✔ 作者 : 邓冰寒
+✔ 标题: 我的文章标题█
+✔ 作者: 邓冰寒
 
 
 Flags:
