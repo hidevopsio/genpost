@@ -80,8 +80,7 @@ Use the arrow keys to navigate: ↓ ↑ → ←
 }
 
 // Run root command handler
-func (c *GenPostCommand) Run(args []string) error {
-	//log.SetLevel(log.DebugLevel)
+func (c *GenPostCommand) Run(args []string) (err error) {
 	log.Infof("handle genpost command")
 
 	root := filepath.Join(io.GetWorkDir(), "/content/")
@@ -89,12 +88,12 @@ func (c *GenPostCommand) Run(args []string) error {
 	log.Debug(root)
 
 	if c.category {
-		c.genCategory(root)
+		err = c.genCategory(root)
 	} else {
-		c.genPost(root)
+		err = c.genPost(root)
 	}
 
-	return nil
+	return
 }
 
 func (c *GenPostCommand) genPost(root string) error {
@@ -117,17 +116,19 @@ func (c *GenPostCommand) genPost(root string) error {
 		}
 	}
 
+	if len(items) == 0 {
+		errMsg := `没找到文章类型，请转到正确的工作目录(content文件夹所在的目录) 或者在当前目录下生成文章类别`
+		return errors.New(errMsg)
+	}
+
 	sel := promptui.Select{
 		Label: "选择类型 ",
 		Items: items,
 	}
 
-	idx, result, err := sel.Run()
-
+	idx, _, err := sel.Run()
 	if err != nil {
-		log.Debugf("Prompt failed %v\n", err)
-	} else {
-		log.Debugf("You choose %v: %q, %v\n", idx, result, paths[idx])
+		return err
 	}
 
 	tt := promptui.Prompt{
@@ -139,7 +140,10 @@ func (c *GenPostCommand) genPost(root string) error {
 			return nil
 		},
 	}
-	title, _ := tt.Run()
+	title, err := tt.Run()
+	if err != nil {
+		return err
+	}
 	postTemplate = strings.Replace(postTemplate, "${title}", title, -1)
 
 	input(&postTemplate,"作者 ", "${author}")
@@ -154,14 +158,20 @@ func (c *GenPostCommand) genPost(root string) error {
 		t.Year(), t.Month(), t.Day(),
 		t.Hour(), t.Minute(), t.Second())
 
-	io.WriterFile(paths[idx], filename, []byte(postTemplate))
+	if err == nil {
+		err = os.MkdirAll(paths[idx], os.ModePerm)
+		if err == nil {
+			log.Debugf(postTemplate)
+			io.WriterFile(paths[idx], filename, []byte(postTemplate))
+			fmt.Printf("已经生成文件：%v\n", filepath.Join(paths[idx], filename))
+		}
+	}
 
-	fmt.Printf("已经生成文件：%v\n", filepath.Join(paths[idx], filename))
-
-	return nil
+	return err
 }
 
 func (c *GenPostCommand) genCategory(root string) error {
+	// TODO: should list categories to determine the new weight
 
 	f := promptui.Prompt{
 		Label: "目录 ",
@@ -173,8 +183,10 @@ func (c *GenPostCommand) genCategory(root string) error {
 			return nil
 		},
 	}
-	folder, _ := f.Run()
-
+	folder, err := f.Run()
+	if err != nil {
+		return err
+	}
 	tt := promptui.Prompt{
 		Label: "标题 ",
 		Validate: func(input string) error {
@@ -184,40 +196,54 @@ func (c *GenPostCommand) genCategory(root string) error {
 			return nil
 		},
 	}
-	title, _ := tt.Run()
+	title, err := tt.Run()
+	if err != nil {
+		return err
+	}
 	categoryTemplate = strings.Replace(categoryTemplate, "${title}", title, -1)
 
 	w := promptui.Prompt{
 		Label: "排序 ",
 		Validate: func(input string) error {
-			if _, err := strconv.ParseInt(input,10,64); err == nil {
-				fmt.Printf("%q looks like a number.\n", input)
+			log.Debugf("input %v", input)
+			if _, err := strconv.ParseInt(input,10,64); input != "" && err == nil {
 				return nil
 			}
-			//log.Error(input)
 			return errors.New("无效输入，请输入数字")
 		},
+		AllowEdit: true,
 	}
-	weight, _ := w.Run()
-	postTemplate = strings.Replace(categoryTemplate, "${weight}", weight, -1)
+	weight, err := w.Run()
+	log.Debugf("weight: %v", weight)
+	if err != nil {
+		return err
+	}
+	categoryTemplate = strings.Replace(categoryTemplate, "${weight}", weight, -1)
 
 	t := time.Now()
-	postTemplate = strings.Replace(categoryTemplate, "${date}", t.Format(time.RFC3339), -1)
+	date := t.Format(time.RFC3339)
+	log.Debugf("date: %v", date)
+	categoryTemplate = strings.Replace(categoryTemplate, "${date}", date, -1)
 
 	path := filepath.Join(root, folder)
 
 	filename := "_index.md"
 	fullPath := filepath.Join(path, filename)
 	log.Debugf(fullPath)
-	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
-		io.WriterFile(path, filename, []byte(categoryTemplate))
-		fmt.Printf("已经生成文件：%v\n", fullPath)
+	if _, err = os.Stat(fullPath); os.IsNotExist(err) {
+		err = os.MkdirAll(path, os.ModePerm)
+		if err == nil {
+			log.Debugf(categoryTemplate)
+			io.WriterFile(path, filename, []byte(categoryTemplate))
+			fmt.Printf("已经生成文件：%v\n", fullPath)
+		}
+
 	} else {
 		fmt.Printf("文件 %v 已存在! \n", fullPath)
 		return errors.New("文件已存在！")
 	}
 
-	return nil
+	return err
 }
 
 func isValid(fp string) bool {

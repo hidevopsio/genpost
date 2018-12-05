@@ -5,14 +5,7 @@ genpost 是markdown文件生成器
 ## 安装方法
 
 ```bash
-go get -u github.com/hidevopsio/genpost
-
-cd $GOPATH/src/github.com/hidevopsio/genpost
-
-dep ensure -v
-
-go install
-
+go get -u -t github.com/hidevopsio/genpost
 ```
 
 ## 生成文章类别
