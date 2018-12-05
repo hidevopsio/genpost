@@ -42,6 +42,6 @@ require (
 	golang.org/x/sys v0.0.0-20181128092732-4ed8d59d0b35
 	golang.org/x/text v0.3.0
 	gopkg.in/yaml.v2 v2.2.2
-	hidevops.io/hiboot v0.11.2
+	hidevops.io/hiboot v1.0.0
 	hidevops.io/viper v1.3.2
 )
