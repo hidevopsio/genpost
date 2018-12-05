@@ -131,7 +131,7 @@ func (c *GenPostCommand) genPost(root string) error {
 	}
 
 	sel := promptui.Select{
-		Label: "选择类型 ",
+		Label: "选择类型",
 		Items: items,
 	}
 
@@ -155,7 +155,7 @@ func (c *GenPostCommand) genPost(root string) error {
 	}
 	postTemplate = strings.Replace(postTemplate, "${title}", title, -1)
 
-	input(&postTemplate,"作者 ", "${author}")
+	input(&postTemplate,"作者", "${author}")
 
 	t := time.Now()
 
@@ -183,7 +183,7 @@ func (c *GenPostCommand) genCategory(root string) error {
 	// TODO: should list categories to determine the new weight
 
 	f := promptui.Prompt{
-		Label: "目录 ",
+		Label: "目录",
 		Validate: func(input string) error {
 			ok := isValid(input)
 			if !ok {
@@ -197,7 +197,7 @@ func (c *GenPostCommand) genCategory(root string) error {
 		return err
 	}
 	tt := promptui.Prompt{
-		Label: "标题 ",
+		Label: "标题",
 		Validate: func(input string) error {
 			if input == "" {
 				return errors.New("不允许为空")
@@ -212,7 +212,7 @@ func (c *GenPostCommand) genCategory(root string) error {
 	categoryTemplate = strings.Replace(categoryTemplate, "${title}", title, -1)
 
 	w := promptui.Prompt{
-		Label: "排序 ",
+		Label: "排序",
 		Validate: func(input string) error {
 			log.Debugf("input %v", input)
 			if _, err := strconv.ParseInt(input,10,64); input != "" && err == nil {
