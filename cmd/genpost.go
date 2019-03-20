@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-const version = "genpost v1.0.0"
+const version = "genpost v1.0.1"
 
 var categoryTemplate = `---
 title: ${title}
@@ -30,6 +30,9 @@ desc: 由 genpost (https://github.com/hidevopsio/genpost) 代码生成器生成
 title: ${title}
 date: ${date}
 author: ${author}
+draft: false
+tags:
+- ${title}
 ---
 
 ## 子标题 1
@@ -62,9 +65,10 @@ func NewRootCommand() *GenPostCommand {
 
 ✔ 目录: articles
 ✔ 标题: 分享文章
-✔ 排序 : 1
+✔ 排序: 1
 
 2. 生成文章
+
 Use the arrow keys to navigate: ↓ ↑ → ←
 
 ? 选择类型:
@@ -72,8 +76,8 @@ Use the arrow keys to navigate: ↓ ↑ → ←
   ▸ 分享文章
     代码阅读
 
-✔ 标题 : 我的文章标题█
-✔ 作者 : 邓冰寒
+✔ 标题: 我的文章标题
+✔ 作者: 邓冰寒
 `
 
 	flags := c.PersistentFlags()
